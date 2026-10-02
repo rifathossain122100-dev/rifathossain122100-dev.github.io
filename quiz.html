@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>বিসিএস, ভর্তি ও সাধারণ জ্ঞান কুইজ – ক্যারিয়ার পথ</title><meta name="description" content="বাংলা, ইংরেজি, গণিত, বাংলাদেশ, বিশ্ব, বিজ্ঞান ও আইসিটি কুইজ।">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600&family=Noto+Serif+Bengali:wght@600;700&display=swap">
+<link rel="stylesheet" href="/style.css">
+<style>
+.qbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin:20px 0}
+.opt{display:block;width:100%;text-align:left;font:400 17px "Hind Siliguri",sans-serif;padding:11px 14px;margin:8px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
+.opt.ok{border-color:var(--accent);background:rgba(14,124,90,.15)}
+.opt.no{border-color:#C0392B;background:rgba(192,57,43,.14)}
+.btn{font:600 16px "Hind Siliguri",sans-serif;padding:10px 20px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;margin-top:8px}
+#ex{color:var(--muted);font-size:15px;min-height:1.7em}
+.meta{color:var(--muted);font-size:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.chip{font:500 15px "Hind Siliguri",sans-serif;padding:5px 14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;cursor:pointer}.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}</style>
+</head><body>
+<header><div class="wrap"><a class="logo" href="/">ক্যারিয়ার পথ</a>
+<nav><a href="/">হোম</a><a href="/quiz.html">কুইজ</a><a href="/qa.html">প্রশ্নোত্তর</a><a href="/about.html">সম্পর্কে</a></nav></div></header>
+<main class="wrap"><h1>বিসিএস, ভর্তি ও সাধারণ জ্ঞান কুইজ</h1><p class="lead">বিষয় বেছে নিন। প্রতিবার ১০টি এলোমেলো প্রশ্ন আসবে। উত্তর বেছে নিলেই সঙ্গে সঙ্গে সঠিক উত্তর ও ব্যাখ্যা দেখতে পাবেন।</p><div class="chips" id="cats" role="group" aria-label="বিষয় বেছে নিন"></div><div class="qbox" id="qb"></div><div class="ad">বিজ্ঞাপনের জায়গা</div></main>
+<footer><div class="wrap"><span>© ক্যারিয়ার পথ</span>
+<span><a href="/privacy.html">প্রাইভেসি পলিসি</a> · <a href="/terms.html">শর্তাবলী</a> · <a href="/about.html">আমাদের সম্পর্কে</a> · <a href="/contact.html">যোগাযোগ</a></span></div></footer>
+<script src="/quiz-data.js"></script>
+<script>
+var cats=["সব"].concat(["ক্যারিয়ার", "বাংলা", "ইংরেজি", "গণিত", "বাংলাদেশ", "বিশ্ব", "বিজ্ঞান", "আইসিটি"]),cur="সব",Q=[],i=0,s=0,done=false;
+var qb=document.getElementById("qb"),cb=document.getElementById("cats");
+function shuf(a){a=a.slice();for(var n=a.length-1;n>0;n--){var r=Math.floor(Math.random()*(n+1)),t=a[n];a[n]=a[r];a[r]=t}return a}
+cats.forEach(function(c){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=c;b.setAttribute("aria-pressed",c===cur);
+b.addEventListener("click",function(){cur=c;cb.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});start()});cb.appendChild(b)});
+function start(){var pool=QUIZ.filter(function(x){return cur==="সব"||x.c===cur});
+Q=shuf(pool).slice(0,10).map(function(x){var opts=shuf(x.o.map(function(t,k){return{t:t,ok:k===0}}));return{q:x.q,e:x.e,o:opts}});i=0;s=0;show()}
+function show(){done=false;var c=Q[i];
+var h='<p class="meta">প্রশ্ন '+(i+1)+' / '+Q.length+' · স্কোর: '+s+'</p><h2 style="margin-top:6px">'+c.q+'</h2>';
+c.o.forEach(function(x,k){h+='<button class="opt" data-k="'+k+'" type="button">'+x.t+'</button>'});
+h+='<p id="ex" role="status" aria-live="polite"></p><button class="btn" id="nx" type="button" hidden>'+(i===Q.length-1?"ফলাফল দেখুন":"পরের প্রশ্ন")+'</button>';
+qb.innerHTML=h;
+qb.querySelectorAll(".opt").forEach(function(b){b.addEventListener("click",pick)});
+document.getElementById("nx").addEventListener("click",function(){i++;i<Q.length?show():end()})}
+function pick(ev){if(done)return;done=true;var k=+ev.currentTarget.dataset.k,c=Q[i];
+qb.querySelectorAll(".opt").forEach(function(b,j){if(c.o[j].ok)b.classList.add("ok");else if(j===k)b.classList.add("no")});
+if(c.o[k].ok)s++;
+document.getElementById("ex").textContent=(c.o[k].ok?"সঠিক! ":"ভুল। ")+c.e;document.getElementById("nx").hidden=false}
+function end(){var p=s/Q.length,m=p>=.8?"চমৎকার!":p>=.5?"ভালো হয়েছে, আরেকবার চেষ্টা করুন।":"আরও অনুশীলন দরকার, আবার খেলুন।";
+qb.innerHTML='<h2>আপনার স্কোর: '+s+' / '+Q.length+'</h2><p>'+m+'</p><button class="btn" id="re" type="button">নতুন প্রশ্ন নিয়ে আবার খেলুন</button>';
+document.getElementById("re").addEventListener("click",start)}
+start();
+</script>
+</body></html>
